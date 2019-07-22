@@ -310,8 +310,9 @@ BOOL CPacketSenderDlg::Receive(u_char* ppayload)
 
 		///////////////////////////// Fill in the blank. ////////////////////////////////////////
 		memcpy(spayload, "\0", length); // 보낼 메시지 패킷 데이터 (현재 파일 아래 함수 호출)
-		m_S1AP->SetMessageType(0); // 보낼 메시지 타입
-		m_S1AP->SetTheNumberOfItems(0); // 보낼 메시지의 아이템 개수
+		m_S1AP->SetMessageType(0x53); // 보낼 메시지 타입
+									//NAS EPS Mobility Management Message Type: Authentification response
+		m_S1AP->SetTheNumberOfItems(5); // 보낼 메시지의 아이템 개수
 										/////////////////////////////////////////////////////////////////////////////////////////
 		break;
 
@@ -497,10 +498,19 @@ u_char* CPacketSenderDlg::initialContextSetupRequestAttachAcceptItems()
 	return temp;
 }
 
+//2주차 과제
 u_char* CPacketSenderDlg::authenticationRspItems()
 {
 	u_char temp[64] = {
-		0
+		0x00, 0x00, 0x00, 0x03, 0x40, 0x12, 0x86,	//item0
+		0x00, 0x08, 0x00, 0x02, 0x00, 0x00,			//item1
+		0x00,0x1a,0x00,0x12,0x11,0x17,0x38,
+		0x6f,0x95,0x5b,0x08,0x07,0x053,0x08,0xaa,
+		0x7a,0xdf,0x21,0x9c,0xa2,0x52,0x82,			//item2 -> 0x00을 0x53으로 기입
+		0x00,0x64,0x40,0x08,0x00, 0x54, 0xf0, 
+		0x60, 0x00, 0x00, 0x10, 0xe0,				//item3
+		0x00,0x43,0x40,0x06,0x00,0x54,0xf0,
+		0x60,0x01,0xf4,								//item4
 	};
 
 	return temp;
@@ -509,7 +519,7 @@ u_char* CPacketSenderDlg::authenticationRspItems()
 u_char*	CPacketSenderDlg::initialContextSetupResponseItems()
 {
 	u_char temp[33] = {
-		0
+		
 	};
 
 	return temp;
